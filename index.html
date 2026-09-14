@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Expense Tracker</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+<h1>💰 Student Expense Tracker</h1>
+<div class="cards">
+<div class="card income">Income: ₹<span id="income">0</span></div>
+<div class="card expense">Expense: ₹<span id="expense">0</span></div>
+<div class="card balance">Balance: ₹<span id="balance">0</span></div>
+</div>
+
+<div class="form">
+<select id="type"><option value="expense">Expense</option><option value="income">Income</option></select>
+<select id="category">
+<option>Food</option><option>Travel</option><option>Books</option><option>Fees</option><option>Hostel</option><option>Shopping</option><option>Other</option>
+</select>
+<input type="number" id="amount" placeholder="Amount ₹">
+<input type="date" id="date">
+<input type="text" id="note" placeholder="Note (ex: Mess bill)">
+<button onclick="addEntry()">Add Entry</button>
+</div>
+
+<div class="filters">
+<input type="text" id="search" placeholder="Search notes..." onkeyup="render()">
+<input type="month" id="monthFilter" onchange="render()">
+</div>
+
+<canvas id="chart" height="100"></canvas>
+
+<table>
+<thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th><th>Note</th><th>Delete</th></tr></thead>
+<tbody id="list"></tbody>
+</table>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
