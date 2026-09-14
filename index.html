@@ -1,44 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width">
 <title>Student Expense Tracker</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+<style>
+body{background:#0f172a;color:white;font-family:Arial;text-align:center;padding:20px}
+.top{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.box{padding:15px 30px;border-radius:10px;font-weight:bold}
+.green{background:#22c55e}.red{background:#ef4444}.blue{background:#3b82f6}
+input,select{padding:10px;border-radius:8px;border:none;margin:5px}
+button{padding:10px 20px;background:#38bdf8;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+table{width:100%;margin-top:20px;background:#1e293b;border-radius:10px}
+th,td{padding:8px}
+</style></head>
 <body>
-<div class="container">
-<h1>💰 Student Expense Tracker</h1>
-<div class="cards">
-<div class="card income">Income: ₹<span id="income">0</span></div>
-<div class="card expense">Expense: ₹<span id="expense">0</span></div>
-<div class="card balance">Balance: ₹<span id="balance">0</span></div>
+<h2>💰 Student Expense Tracker</h2>
+<div class="top">
+<div class="box green" id="inc">Income: ₹0</div>
+<div class="box red" id="exp">Expense: ₹0</div>
+<div class="box blue" id="bal">Balance: ₹0</div>
 </div>
-
-<div class="form">
-<select id="type"><option value="expense">Expense</option><option value="income">Income</option></select>
-<select id="category">
-<option>Food</option><option>Travel</option><option>Books</option><option>Fees</option><option>Hostel</option><option>Shopping</option><option>Other</option>
-</select>
-<input type="number" id="amount" placeholder="Amount ₹">
+<select id="type"><option>Income</option><option>Expense</option></select>
+<select id="cat"><option>Food</option><option>Travel</option><option>Salary</option><option>Pocket Money</option></select>
+<input type="number" id="amt" placeholder="Amount">
 <input type="date" id="date">
-<input type="text" id="note" placeholder="Note (ex: Mess bill)">
+<input type="text" id="note" placeholder="Note">
 <button onclick="addEntry()">Add Entry</button>
-</div>
-
-<div class="filters">
-<input type="text" id="search" placeholder="Search notes..." onkeyup="render()">
-<input type="month" id="monthFilter" onchange="render()">
-</div>
-
-<canvas id="chart" height="100"></canvas>
-
-<table>
-<thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th><th>Note</th><th>Delete</th></tr></thead>
-<tbody id="list"></tbody>
-</table>
-</div>
-<script src="app.js"></script>
+<table id="table"><tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th><th>Note</th><th>Delete</th></tr></table>
+<script>
+let entries=JSON.parse(localStorage.getItem('entries')||'[]');
+function render(){
+ let inc=0,exp=0;let tbl=document.getElementById('table');
+ tbl.innerHTML='<tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th><th>Note</th><th>Delete</th></tr>';
+ entries.forEach((e,i)=>{
+   if(e.type=='Income')inc+=e.amount;else exp+=e.amount;
+   tbl.innerHTML+=`<tr><td>${e.date}</td><td>${e.type}</td><td>${e.category}</td><td>₹${e.amount}</td><td>${e.note}</td><td><button onclick="del(${i})">X</button></td></tr>`;
+ });
+ document.getElementById('inc').innerText='Income: ₹'+inc;
+ document.getElementById('exp').innerText='Expense: ₹'+exp;
+ document.getElementById('bal').innerText='Balance: ₹'+(inc-exp);
+ localStorage.setItem('entries',JSON.stringify(entries));
+}
+function addEntry(){
+ let type=document.getElementById('type').value;
+ let cat=document.getElementById('cat').value;
+ let amt=parseFloat(document.getElementById('amt').value);
+ let date=document.getElementById('date').value;
+ let note=document.getElementById('note').value;
+ if(!amt||!date){alert('Amount & Date podu da!');return;}
+ entries.push({type,category:cat,amount:amt,date,note});render();
+ document.getElementById('amt').value='';document.getElementById('note').value='';
+}
+function del(i){entries.splice(i,1);render();}
+render();document.getElementById('date').valueAsDate=new Date();
+</script>
 </body>
 </html>
